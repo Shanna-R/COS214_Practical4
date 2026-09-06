@@ -7,6 +7,7 @@
 class StatusDecorator : public TaskDecorator
 {
     private:
+    //TODO: MAKE THIS AN ENUM SUCH THAT IT IS EASIER TO ALTER AND CHANGE 
         std::string status; // Options: "In Progress", "Reviewing", "Completed"
 
     public:
