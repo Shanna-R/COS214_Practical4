@@ -21,7 +21,7 @@ void PriorityDecorator::display(int depth) const
     std::cout << "[PRIORITY " << this->priority << "] ";
     if (wrappedTask)
     {
-        wrappedTask->display(0);
+        TaskDecorator::wrappedTask->display(0);
     }
 }
 
