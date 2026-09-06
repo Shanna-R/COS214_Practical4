@@ -238,7 +238,7 @@ int main()
 
     // 2. Wrap with StatusDecorator ("In Progress")
     std::shared_ptr<StatusDecorator> statusTask(
-        new StatusDecorator(secureDeployTask, "In Progress")
+        new StatusDecorator(secureDeployTask,TaskStatus::IN_PROGRESS)
     );
 
     // 3. Wrap with AuditLogDecorator
@@ -269,7 +269,7 @@ int main()
     // 6. Runtime Configuration Changes (Changing Status & Escalating Priority)
     std::cout << "\n--- Executing Runtime Configuration Changes ---\n";
     std::cout << "Updating status from 'In Progress' to 'Reviewing'...\n";
-    statusTask->setStatus("Reviewing");
+    statusTask->setStatus(TaskStatus::REVIEWING);
 
     std::cout << "Escalating priority level from 1 to 10...\n";
     fullyDecoratedTask->setPriority(10);
@@ -278,7 +278,7 @@ int main()
     production->display();
 
     std::cout << "\nUpdating status from 'Reviewing' to 'Completed'...\n";
-    statusTask->setStatus("Completed");
+    statusTask->setStatus(TaskStatus::COMPLETED);
 
     std::cout << "\n--- Final Hierarchy Display ---\n";
     production->display();
