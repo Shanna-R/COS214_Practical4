@@ -6,7 +6,8 @@
 enum class TaskStatus{
     IN_PROGRESS,
     PENDING,
-    COMPLETED
+    COMPLETED,
+    REVIEWING
 };
 
 
@@ -18,6 +19,8 @@ inline std::string statusToString(TaskStatus status){
             return "Pending";
         case TaskStatus::COMPLETED:
             return "Completed";
+        case TaskStatus::REVIEWING:
+            return "Reviewing";
         default:
             "Unknown";
     }

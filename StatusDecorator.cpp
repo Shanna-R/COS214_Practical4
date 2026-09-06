@@ -1,7 +1,7 @@
 #include "StatusDecorator.h"
 #include <iostream>
 
-StatusDecorator::StatusDecorator(std::shared_ptr<TaskComponent> task, const std::string& status):TaskDecorator(task){
+StatusDecorator::StatusDecorator(std::shared_ptr<TaskComponent> task, TaskStatus status):TaskDecorator(task){
     this->status = status;
 }
 
@@ -11,7 +11,7 @@ StatusDecorator::~StatusDecorator()
 
 std::string StatusDecorator::getName() const
 {
-    return TaskDecorator::getName() + " (" + this->status + ")";
+    return TaskDecorator::getName() + " (" + statusToString(this->status) + ")";
 }
 
 void StatusDecorator::display(int depth) const
@@ -20,19 +20,19 @@ void StatusDecorator::display(int depth) const
     {
         std::cout << "    ";
     }
-    std::cout << "STATUS [" << this->status << "] ";
+    std::cout << "STATUS [" << statusToString(this->status) << "] ";
     if (wrappedTask)
     {
         wrappedTask->display(0);
     }
 }
 
-std::string StatusDecorator::getStatus() const
+TaskStatus StatusDecorator::getStatus() const
 {
     return this->status;
 }
 
-void StatusDecorator::setStatus(const std::string& newStatus)
+void StatusDecorator::setStatus(TaskStatus newStatus)
 {
     this->status = newStatus;
 }
