@@ -670,3 +670,7 @@ TaskForge integrates the Composite, Iterator, State, and Decorator design patter
 The Composite pattern provides the recursive project hierarchy, the Iterator pattern provides controlled traversal, the State pattern manages task lifecycle behaviour, and the Decorator pattern dynamically extends task functionality.
 
 The project is built using C++11 and Make, runs inside a Docker environment, and has been tested using GDB and Valgrind to verify runtime behaviour and memory management.
+
+## 23. Updates 
+
+**StatusDecorator has been removed from the concrete decorators and the main.cpp has since been updated**
