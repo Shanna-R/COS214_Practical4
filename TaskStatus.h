@@ -22,7 +22,7 @@ inline std::string statusToString(TaskStatus status){
         case TaskStatus::REVIEWING:
             return "Reviewing";
         default:
-            "Unknown";
+            return "Unknown";
     }
 }
 
