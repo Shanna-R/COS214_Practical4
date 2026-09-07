@@ -1,7 +1,6 @@
 #include "Task.h"
 #include "TaskGroup.h"
 #include "TaskIterator.h"
-#include "StatusDecorator.h"
 #include "TaskDecorator.h"
 #include "PriorityDecorator.h"
 #include "AuditLogDecorator.h"
@@ -9,9 +8,27 @@
 #include <iostream>
 #include <memory>
 
+// =========================================================
+// ANSI COLOR ESCAPE CODES FOR TERMINAL FORMATTING
+// =========================================================
+#define RESET       "\033[0m"
+#define BOLD        "\033[1m"
+#define RED         "\033[31m"
+#define GREEN       "\033[32m"
+#define YELLOW      "\033[33m"
+#define BLUE        "\033[34m"
+#define MAGENTA     "\033[35m"
+#define CYAN        "\033[36m"
+#define BOLD_RED    "\033[1;\033[31m"
+#define BOLD_GREEN  "\033[1;\033[32m"
+#define BOLD_YELLOW "\033[1;\033[33m"
+#define BOLD_BLUE   "\033[1;\033[34m"
+#define BOLD_MAGENTA "\033[1;\033[35m"
+#define BOLD_CYAN   "\033[1;\033[36m"
+
 void printTraversal(Iterator& iterator, const std::string& title)
 {
-    std::cout << "\n===== " << title << " =====\n";
+    std::cout << BOLD_CYAN << "\n===== " << title << " =====\n" << RESET;
 
     while (iterator.hasNext())
     {
@@ -21,11 +38,11 @@ void printTraversal(Iterator& iterator, const std::string& title)
 
         if (component->isGroup())
         {
-            std::cout << " [GROUP]";
+            std::cout << YELLOW << " [GROUP]" << RESET;
         }
         else
         {
-            std::cout << " [TASK]";
+            std::cout << GREEN << " [TASK]" << RESET;
         }
 
         std::cout << std::endl;
@@ -150,9 +167,9 @@ int main()
 
 
     // DISPLAY COMPLETE HIERARCHY
-    std::cout << "========================================\n";
-    std::cout << " SOFTWARE DELIVERY PROJECT\n";
-    std::cout << "========================================\n";
+    std::cout << BOLD_BLUE << "========================================\n";
+    std::cout << " SOFTWARE DELIVERY PROJECT HIERARCHY\n";
+    std::cout << "========================================\n" << RESET;
 
     project->display();
 
@@ -184,29 +201,25 @@ int main()
     std::unique_ptr<TaskIterator> iteratorTwo =
         project->createBreadthFirstIterator();
 
-    std::cout << "\n===== TWO INDEPENDENT ITERATORS =====\n";
+    std::cout << BOLD_MAGENTA << "\n===== TWO INDEPENDENT ITERATORS =====\n" << RESET;
 
-    std::cout << "Iterator 1: ";
-
+    std::cout << BOLD << "Iterator 1 (Depth-First): " << RESET;
     if (iteratorOne->hasNext())
     {
-        std::cout << iteratorOne->next()->getName();
+        std::cout << CYAN << iteratorOne->next()->getName() << RESET;
     }
-
     std::cout << std::endl;
 
-    std::cout << "Iterator 2: ";
-
+    std::cout << BOLD << "Iterator 2 (Breadth-First): " << RESET;
     if (iteratorTwo->hasNext())
     {
-        std::cout << iteratorTwo->next()->getName();
+        std::cout << CYAN << iteratorTwo->next()->getName() << RESET;
     }
-
     std::cout << std::endl;
 
 
     // RUNTIME STRUCTURAL CHANGE
-    std::cout << "\n===== RUNTIME CHANGE =====\n";
+    std::cout << BOLD_YELLOW << "\n===== RUNTIME STRUCTURAL CHANGE =====\n" << RESET;
 
     backend->add(
         std::shared_ptr<Task>(
@@ -214,7 +227,7 @@ int main()
         )
     );
 
-    std::cout << "Added: Implement Security\n";
+    std::cout << GREEN << "[+] Added: 'Implement Security' to Backend Module\n" << RESET;
 
     std::unique_ptr<TaskIterator> updatedIterator =
         project->createDepthFirstIterator();
@@ -224,32 +237,32 @@ int main()
         "UPDATED DEPTH-FIRST TRAVERSAL"
     );
 
+
     // =========================================================
     // PERSON 3: DECORATOR INTEGRATION & RUNTIME DEMONSTRATIONS
     // =========================================================
-    std::cout << "\n========================================\n";
+    std::cout << BOLD_MAGENTA << "\n========================================\n";
     std::cout << " PERSON 3: DECORATOR PATTERN DEMO\n";
-    std::cout << "========================================\n";
+    std::cout << "========================================\n" << RESET;
 
-    std::shared_ptr<TaskComponent> secureDeployTask(
+    // Direct pointer to Task so state transitions can be called directly
+    std::shared_ptr<Task> secureDeployTask(
         new Task("Deploy Security Patch")
     );
 
-    std::shared_ptr<StatusDecorator> statusTask(
-        new StatusDecorator(secureDeployTask,TaskStatus::IN_PROGRESS)
-    );
-
+    // Wrapped directly in AuditLogDecorator (StatusDecorator removed)
     std::shared_ptr<TaskComponent> auditedTask(
-        new AuditLogDecorator(statusTask, "AUDIT-2026-X9")
+        new AuditLogDecorator(secureDeployTask, "AUDIT-2026-X9")
     );
 
+    // Wrapped in PriorityDecorator
     std::shared_ptr<PriorityDecorator> fullyDecoratedTask(
         new PriorityDecorator(auditedTask, 1)
     );
 
     production->add(fullyDecoratedTask);
 
-    std::cout << "\n--- Displaying Hierarchy with Stacked Decorators ---\n";
+    std::cout << BOLD_YELLOW << "\n--- Displaying Hierarchy with Stacked Decorators ---\n" << RESET;
     production->display();
 
     std::unique_ptr<TaskIterator> decoratorIterator =
@@ -260,54 +273,57 @@ int main()
         "TRAVERSAL OVER DECORATED PRODUCTION TASKS"
     );
 
-    // 6. Runtime Configuration Changes (Changing Status & Escalating Priority)
-    std::cout << "\n--- Executing Runtime Configuration Changes ---\n";
-    std::cout << "Updating status from 'In Progress' to 'Reviewing'...\n";
-    statusTask->setStatus(TaskStatus::REVIEWING);
+    // Runtime Configuration Changes (State Pattern & Priority Escalation)
+    std::cout << BOLD_YELLOW << "\n--- Executing Runtime Configuration Changes ---\n" << RESET;
+    
+    std::cout << CYAN << "Transitioning task state to 'In Progress' via Task State Pattern...\n" << RESET;
+    secureDeployTask->start();
 
-    std::cout << "Escalating priority level from 1 to 10...\n";
+    std::cout << CYAN << "Escalating priority level from 1 to 10 via PriorityDecorator...\n" << RESET;
     fullyDecoratedTask->setPriority(10);
 
-    std::cout << "\n--- Updated Hierarchy Display ---\n";
+    std::cout << BOLD_YELLOW << "\n--- Updated Hierarchy Display ---\n" << RESET;
     production->display();
 
-    std::cout << "\nUpdating status from 'Reviewing' to 'Completed'...\n";
-    statusTask->setStatus(TaskStatus::COMPLETED);
+    std::cout << CYAN << "\nTransitioning task state to 'Completed' via Task State Pattern...\n" << RESET;
+    secureDeployTask->complete();
 
-    std::cout << "\n--- Final Hierarchy Display ---\n";
+    std::cout << BOLD_YELLOW << "\n--- Final Hierarchy Display ---\n" << RESET;
     production->display();
 
 
-     Task login("Implement Login");
+    // =========================================================
+    // TASK STATE PATTERN TEST
+    // =========================================================
+    Task login("Implement Login");
 
-    std::cout << "\n===== STATE TEST =====\n";
+    std::cout << BOLD_GREEN << "\n========================================\n";
+    std::cout << " TASK STATE PATTERN TEST\n";
+    std::cout << "========================================\n" << RESET;
 
-    std::cout << "Initial state: "
-              << login.getStatus()
-              << std::endl;
+    std::cout << BOLD << "Initial state: " << RESET 
+              << YELLOW << login.getStatus() << RESET << std::endl;
 
     login.execute();
 
-    std::cout << "\nStarting task...\n";
+    std::cout << CYAN << "\nStarting task...\n" << RESET;
     login.start();
 
-    std::cout << "Current state: "
-              << login.getStatus()
-              << std::endl;
+    std::cout << BOLD << "Current state: " << RESET 
+              << YELLOW << login.getStatus() << RESET << std::endl;
 
     login.execute();
 
-    std::cout << "\nCompleting task...\n";
+    std::cout << CYAN << "\nCompleting task...\n" << RESET;
     login.complete();
 
-    std::cout << "Current state: "
-              << login.getStatus()
-              << std::endl;
+    std::cout << BOLD << "Current state: " << RESET 
+              << GREEN << login.getStatus() << RESET << std::endl;
 
-    std::cout << "\nTrying invalid transition...\n";
+    std::cout << RED << "\nTrying invalid transition (start on completed task)...\n" << RESET;
     login.start();
 
-    std::cout << "\nTrying to complete again...\n";
+    std::cout << RED << "\nTrying to complete again...\n" << RESET;
     login.complete();
 
     return 0;
