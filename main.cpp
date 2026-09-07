@@ -283,5 +283,38 @@ int main()
     std::cout << "\n--- Final Hierarchy Display ---\n";
     production->display();
 
+
+     Task login("Implement Login");
+
+    std::cout << "\n===== STATE TEST =====\n";
+
+    std::cout << "Initial state: "
+              << login.getStatus()
+              << std::endl;
+
+    login.execute();
+
+    std::cout << "\nStarting task...\n";
+    login.start();
+
+    std::cout << "Current state: "
+              << login.getStatus()
+              << std::endl;
+
+    login.execute();
+
+    std::cout << "\nCompleting task...\n";
+    login.complete();
+
+    std::cout << "Current state: "
+              << login.getStatus()
+              << std::endl;
+
+    std::cout << "\nTrying invalid transition...\n";
+    login.start();
+
+    std::cout << "\nTrying to complete again...\n";
+    login.complete();
+
     return 0;
 }
