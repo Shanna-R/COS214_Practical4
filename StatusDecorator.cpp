@@ -23,7 +23,7 @@ void StatusDecorator::display(int depth) const
     std::cout << "STATUS [" << statusToString(this->status) << "] ";
     if (wrappedTask)
     {
-        wrappedTask->display(0);
+        TaskDecorator::wrappedTask->display(0);
     }
 }
 
