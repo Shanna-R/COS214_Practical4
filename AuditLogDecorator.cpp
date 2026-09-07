@@ -1,8 +1,8 @@
 #include "AuditLogDecorator.h"
 #include <iostream>
 
-AuditLogDecorator::AuditLogDecorator(std::shared_ptr<TaskComponent> task, const std::string& id):TaskDecorator(task){
-    this->auditID = id;
+AuditLogDecorator::AuditLogDecorator(std::shared_ptr<TaskComponent> task, const std::string& auditID):TaskDecorator(task){
+    this->auditID = auditID;
 }
 
 AuditLogDecorator::~AuditLogDecorator()
