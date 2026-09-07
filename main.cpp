@@ -1,6 +1,10 @@
 #include "Task.h"
 #include "TaskGroup.h"
 #include "TaskIterator.h"
+#include "StatusDecorator.h"
+#include "TaskDecorator.h"
+#include "PriorityDecorator.h"
+#include "AuditLogDecorator.h"
 
 #include <iostream>
 #include <memory>
@@ -219,6 +223,65 @@ int main()
         *updatedIterator,
         "UPDATED DEPTH-FIRST TRAVERSAL"
     );
+
+    // =========================================================
+    // PERSON 3: DECORATOR INTEGRATION & RUNTIME DEMONSTRATIONS
+    // =========================================================
+    std::cout << "\n========================================\n";
+    std::cout << " PERSON 3: DECORATOR PATTERN DEMO\n";
+    std::cout << "========================================\n";
+
+    // 1. Create base leaf task
+    std::shared_ptr<TaskComponent> secureDeployTask(
+        new Task("Deploy Security Patch")
+    );
+
+    // 2. Wrap with StatusDecorator ("In Progress")
+    std::shared_ptr<StatusDecorator> statusTask(
+        new StatusDecorator(secureDeployTask,TaskStatus::IN_PROGRESS)
+    );
+
+    // 3. Wrap with AuditLogDecorator
+    std::shared_ptr<TaskComponent> auditedTask(
+        new AuditLogDecorator(statusTask, "AUDIT-2026-X9")
+    );
+
+    // 4. Wrap with PriorityDecorator (Level 1) -> Stacked Decorator
+    std::shared_ptr<PriorityDecorator> fullyDecoratedTask(
+        new PriorityDecorator(auditedTask, 1)
+    );
+
+    // Add stacked decorated task directly into the composite tree
+    production->add(fullyDecoratedTask);
+
+    std::cout << "\n--- Displaying Hierarchy with Stacked Decorators ---\n";
+    production->display();
+
+    // 5. Test Traversal over Decorated Items
+    std::unique_ptr<TaskIterator> decoratorIterator =
+        production->createDepthFirstIterator();
+
+    printTraversal(
+        *decoratorIterator,
+        "TRAVERSAL OVER DECORATED PRODUCTION TASKS"
+    );
+
+    // 6. Runtime Configuration Changes (Changing Status & Escalating Priority)
+    std::cout << "\n--- Executing Runtime Configuration Changes ---\n";
+    std::cout << "Updating status from 'In Progress' to 'Reviewing'...\n";
+    statusTask->setStatus(TaskStatus::REVIEWING);
+
+    std::cout << "Escalating priority level from 1 to 10...\n";
+    fullyDecoratedTask->setPriority(10);
+
+    std::cout << "\n--- Updated Hierarchy Display ---\n";
+    production->display();
+
+    std::cout << "\nUpdating status from 'Reviewing' to 'Completed'...\n";
+    statusTask->setStatus(TaskStatus::COMPLETED);
+
+    std::cout << "\n--- Final Hierarchy Display ---\n";
+    production->display();
 
     return 0;
 }
