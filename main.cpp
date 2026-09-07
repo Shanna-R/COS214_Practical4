@@ -1,7 +1,6 @@
 #include "Task.h"
 #include "TaskGroup.h"
 #include "TaskIterator.h"
-#include "StatusDecorator.h"
 #include "TaskDecorator.h"
 #include "PriorityDecorator.h"
 #include "AuditLogDecorator.h"
@@ -231,18 +230,17 @@ int main()
     std::cout << " PERSON 3: DECORATOR PATTERN DEMO\n";
     std::cout << "========================================\n";
 
-    std::shared_ptr<TaskComponent> secureDeployTask(
+    // 1. Concrete Task (Context for State Pattern)
+    std::shared_ptr<Task> secureDeployTask(
         new Task("Deploy Security Patch")
     );
 
-    std::shared_ptr<StatusDecorator> statusTask(
-        new StatusDecorator(secureDeployTask,TaskStatus::IN_PROGRESS)
-    );
-
+    // 2. Wrap directly with AuditLogDecorator (StatusDecorator removed)
     std::shared_ptr<TaskComponent> auditedTask(
-        new AuditLogDecorator(statusTask, "AUDIT-2026-X9")
+        new AuditLogDecorator(secureDeployTask, "AUDIT-2026-X9")
     );
 
+    // 3. Wrap with PriorityDecorator
     std::shared_ptr<PriorityDecorator> fullyDecoratedTask(
         new PriorityDecorator(auditedTask, 1)
     );
@@ -260,10 +258,10 @@ int main()
         "TRAVERSAL OVER DECORATED PRODUCTION TASKS"
     );
 
-    // 6. Runtime Configuration Changes (Changing Status & Escalating Priority)
+    // 4. Runtime Configuration Changes (State Transitions & Priority Escalation)
     std::cout << "\n--- Executing Runtime Configuration Changes ---\n";
-    std::cout << "Updating status from 'In Progress' to 'Reviewing'...\n";
-    statusTask->setStatus(TaskStatus::REVIEWING);
+    std::cout << "Starting task via State Pattern...\n";
+    secureDeployTask->start();
 
     std::cout << "Escalating priority level from 1 to 10...\n";
     fullyDecoratedTask->setPriority(10);
@@ -271,12 +269,11 @@ int main()
     std::cout << "\n--- Updated Hierarchy Display ---\n";
     production->display();
 
-    std::cout << "\nUpdating status from 'Reviewing' to 'Completed'...\n";
-    statusTask->setStatus(TaskStatus::COMPLETED);
+    std::cout << "\nCompleting task via State Pattern...\n";
+    secureDeployTask->complete();
 
     std::cout << "\n--- Final Hierarchy Display ---\n";
     production->display();
-
 
      Task login("Implement Login");
 
