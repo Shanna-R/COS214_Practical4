@@ -242,7 +242,7 @@ int main()
     // PERSON 3: DECORATOR INTEGRATION & RUNTIME DEMONSTRATIONS
     // =========================================================
     std::cout << BOLD_MAGENTA << "\n========================================\n";
-    std::cout << " PERSON 3: DECORATOR PATTERN DEMO\n";
+    std::cout << " DECORATOR PATTERN DEMO\n";
     std::cout << "========================================\n" << RESET;
 
     // Direct pointer to Task so state transitions can be called directly
