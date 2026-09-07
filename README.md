@@ -92,7 +92,6 @@ Task functionality can be extended dynamically without modifying the original `T
 
 The implementation includes:
 
-- `StatusDecorator`
 - `PriorityDecorator`
 - `AuditLogDecorator`
 
@@ -104,8 +103,6 @@ Example:
 PriorityDecorator
         ↓
 AuditLogDecorator
-        ↓
-StatusDecorator
         ↓
 Task
 ```
@@ -128,8 +125,6 @@ TaskForge/
 ├── Iterator.h
 ├── PriorityDecorator.cpp
 ├── PriorityDecorator.h
-├── StatusDecorator.cpp
-├── StatusDecorator.h
 ├── Task.cpp
 ├── Task.h
 ├── TaskComponent.cpp
@@ -140,7 +135,6 @@ TaskForge/
 ├── TaskGroup.h
 ├── TaskIterator.cpp
 ├── TaskIterator.h
-├── TaskState.h
 ├── TaskStatus.h
 ├── TodoState.cpp
 ├── TodoState.h
@@ -203,7 +197,6 @@ TaskComponent
       |
       +-- TaskDecorator
              |
-             +-- StatusDecorator
              +-- PriorityDecorator
              +-- AuditLogDecorator
 ```
@@ -421,8 +414,6 @@ can be wrapped as:
 PriorityDecorator
         |
 AuditLogDecorator
-        |
-StatusDecorator
         |
 Deploy Security Patch
 ```
